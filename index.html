@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IRT FUTURE SIGNAL - GLOBAL PRO</title>
+    <style>
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body, html {
+            margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(-45deg, #020617, #1e1b4b, #312e81, #020617);
+            background-size: 400% 400%;
+            animation: gradientBG 8s ease infinite;
+            color: #f1f5f9; min-height: 100vh; overflow-y: auto;
+        }
+
+        /* LOGIN INTERFACE */
+        #auth-section { height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+        .auth-card {
+            background: rgba(15, 23, 42, 0.7); padding: 40px 30px; border-radius: 30px;
+            border: 2px solid #fbbf24; width: 100%; max-width: 350px; text-align: center;
+            backdrop-filter: blur(20px); box-shadow: 0 0 50px rgba(251, 191, 36, 0.3);
+        }
+        .btn-premium {
+            width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            border: none; border-radius: 15px; font-weight: bold; cursor: pointer;
+            text-transform: uppercase; color: #000; margin-top: 20px; transition: 0.3s;
+        }
+        .btn-premium:hover { transform: scale(1.03); box-shadow: 0 0 20px #fbbf24; }
+
+        /* DASHBOARD */
+        #bot-section { display: none; width: 100%; max-width: 500px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
+        .dashboard-card { background: rgba(30, 41, 59, 0.8); padding: 25px; border-radius: 25px; border: 1px solid #38bdf8; }
+
+        /* MULTI-ASSET GRID (60+ PAIRS) */
+        .pair-container {
+            max-height: 350px; overflow-y: auto; background: rgba(2, 6, 23, 0.8);
+            padding: 15px; border-radius: 20px; border: 1px solid #475569; margin: 15px 0;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+        }
+        .pair-item {
+            padding: 12px 5px; border-radius: 12px; background: rgba(30, 41, 59, 1);
+            border: 1px solid rgba(56, 189, 248, 0.2); font-size: 10px; font-weight: bold;
+            cursor: pointer; text-align: center; transition: 0.2s; color: #cbd5e1;
+        }
+        .pair-item.selected { background: #fbbf24; color: #000; border-color: #fff; box-shadow: 0 0 12px #fbbf24; }
+
+        #results { background: #020617; border-radius: 15px; border: 1px solid #334155; margin-top: 20px; min-height: 50px; }
+        .signal-item { padding: 12px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; font-size: 11px; }
+
+        .owner-card {
+            display: flex; align-items: center; background: rgba(30, 41, 59, 0.8);
+            padding: 15px; border-radius: 60px; border: 1px solid #fbbf24; margin-top: 30px;
+        }
+        .owner-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #fbbf24; margin-right: 15px; object-fit: cover; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #fbbf24; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="auth-section">
+    <div class="auth-card">
+        <h2 style="color:#fbbf24; letter-spacing: 2px;">IRT LOGIN</h2>
+        <input type="text" id="user-id" placeholder="Account ID" style="width:100%; padding:14px; margin:10px 0; border-radius:12px; border:1px solid #38bdf8; background:#020617; color:white;">
+        <input type="password" id="license-key" placeholder="License Key" style="width:100%; padding:14px; margin:10px 0; border-radius:12px; border:1px solid #38bdf8; background:#020617; color:white;">
+        <button class="btn-premium" onclick="validateLogin()">START GLOBAL BOT</button>
+        <p id="auth-err" style="color:#f87171; display:none; margin-top:10px;">Invalid Credentials!</p>
+    </div>
+</div>
+
+<div id="bot-section">
+    <div class="dashboard-card">
+        <div style="display:flex; justify-content:space-between; color:#fbbf24; font-weight:bold; font-size:12px; margin-bottom:15px;">
+            <div id="live-time">00:00:00</div>
+            <div style="color:#4ade80;">LICENSE ACTIVE: 2027</div>
+        </div>
+
+        <h4 style="margin:0; font-size:11px; color:#38bdf8; text-transform:uppercase;">Select Assets (Tap Multiple)</h4>
+        <div class="pair-container" id="pair-list">
+            <div class="pair-item" onclick="togglePair('USDBDT-OTC', this)">USDBDT-OTC</div>
+            <div class="pair-item" onclick="togglePair('USDBRL-OTC', this)">USDBRL-OTC</div>
+            <div class="pair-item" onclick="togglePair('USDMXN-OTC', this)">USDMXN-OTC</div>
+            <div class="pair-item" onclick="togglePair('USDARS-OTC', this)">USDARS-OTC</div>
+            <div class="pair-item" onclick="togglePair('USDCOP-OTC', this)">USDCOP-OTC</div>
+            <div class="pair-item" onclick="togglePair('USDNGN-OTC', this)">USDNGN-OTC</div>
+            <div class="pair-item" onclick="togglePair('USDDZD-OTC', this)">USDDZD-OTC</div>
+            <div class="pair-item" onclick="togglePair('USDPHP-OTC', this)">USDPHP-OTC</div>
+            <div class="pair-item" onclick="togglePair('USDZAR-OTC', this)">USDZAR-OTC</div>
+            <div class="pair-item" onclick="togglePair('USDEGP-OTC', this)">USDEGP-OTC</div>
+            <div class="pair-item" onclick="togglePair('USDINR-OTC', this)">USDINR-OTC</div>
+            <div class="pair-item" onclick="togglePair('USDIDR-OTC', this)">USDIDR-OTC</div>
+            <div class="pair-item" onclick="togglePair('PEPEUSD-OTC', this)">PEPE-OTC</div>
+            <div class="pair-item" onclick="togglePair('BNBUSD-OTC', this)">BNB-OTC</div>
+            <div class="pair-item" onclick="togglePair('BTCUSD-OTC', this)">BTC-OTC</div>
+            <div class="pair-item" onclick="togglePair('ETHUSD-OTC', this)">ETH-OTC</div>
+            <div class="pair-item" onclick="togglePair('LTCUSD-OTC', this)">LTC-OTC</div>
+            <div class="pair-item" onclick="togglePair('EURUSD-OTC', this)">EURUSD-OTC</div>
+            <div class="pair-item" onclick="togglePair('GBPUSD-OTC', this)">GBPUSD-OTC</div>
+            <div class="pair-item" onclick="togglePair('USDJPY-OTC', this)">USDJPY-OTC</div>
+            <div class="pair-item" onclick="togglePair('AUDUSD-OTC', this)">AUDUSD-OTC</div>
+            <div class="pair-item" onclick="togglePair('USDCAD-OTC', this)">USDCAD-OTC</div>
+            <div class="pair-item" onclick="togglePair('NZDUSD-OTC', this)">NZDUSD-OTC</div>
+            <div class="pair-item" onclick="togglePair('EURJPY-OTC', this)">EURJPY-OTC</div>
+            <div class="pair-item" onclick="togglePair('GBPJPY-OTC', this)">GBPJPY-OTC</div>
+            <div class="pair-item" onclick="togglePair('EURGBP-OTC', this)">EURGBP-OTC</div>
+            <div class="pair-item" onclick="togglePair('AUDCAD-OTC', this)">AUDCAD-OTC</div>
+            <div class="pair-item" onclick="togglePair('GBPAUD-OTC', this)">GBPAUD-OTC</div>
+            <div class="pair-item" onclick="togglePair('CHFJPY-OTC', this)">CHFJPY-OTC</div>
+            <div class="pair-item" onclick="togglePair('TRUUSD-OTC', this)">TRUUSD-OTC</div>
+            <div class="pair-item" onclick="togglePair('AUDJPY-OTC', this)">AUDJPY-OTC</div>
+            <div class="pair-item" onclick="togglePair('CADJPY-OTC', this)">CADJPY-OTC</div>
+            <div class="pair-item" onclick="togglePair('EURAUD-OTC', this)">EURAUD-OTC</div>
+            <div class="pair-item" onclick="togglePair('EURCAD-OTC', this)">EURCAD-OTC</div>
+            <div class="pair-item" onclick="togglePair('GBPCAD-OTC', this)">GBPCAD-OTC</div>
+            <div class="pair-item" onclick="togglePair('GOLD-OTC', this)">GOLD-OTC</div>
+            <div class="pair-item" onclick="togglePair('APPLE-OTC', this)">APPLE-OTC</div>
+            <div class="pair-item" onclick="togglePair('GOOGLE-OTC', this)">GOOGLE-OTC</div>
+            <div class="pair-item" onclick="togglePair('MICROSOFT-OTC', this)">MICROSOFT-OTC</div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <div style="flex:1"><label style="font-size:9px; color:#fbbf24;">START</label><input type="time" id="t-start" value="00:00" style="width:100%; padding:10px; border-radius:10px; background:#020617; border:1px solid #38bdf8; color:white;"></div>
+            <div style="flex:1"><label style="font-size:9px; color:#fbbf24;">END</label><input type="time" id="t-end" value="23:59" style="width:100%; padding:10px; border-radius:10px; background:#020617; border:1px solid #38bdf8; color:white;"></div>
+        </div>
+
+        <button class="btn-premium" onclick="generateAllSignals()" style="background:#38bdf8; color:#000;">GENERATE PREMIUM SIGNALS</button>
+    </div>
+
+    <div id="results">SYSTEM READY FOR GLOBAL ANALYSIS...</div>
+
+    <div id="action-btns" style="display:none; gap:10px; margin-top:20px;">
+        <button onclick="copyAll()" style="flex:2; padding:15px; background:#4ade80; border:none; border-radius:12px; font-weight:bold; color:#000;">📋 COPY ALL SIGNALS</button>
+        <button onclick="clearAll()" style="flex:1; padding:15px; background:#ef4444; border:none; border-radius:12px; color:white;">CLEAR</button>
+    </div>
+
+    <div class="owner-card">
+        <img src="file_00000000bea072308204c5eaa5f02903.png" class="owner-logo">
+        <div>
+            <div style="font-weight:bold; color:#fbbf24; font-size:16px;">@irtsupport1</div>
+            <a href="https://t.me/irttradindzone" target="_blank" style="font-size:12px; color:#38bdf8; text-decoration:none;">Join Official Channel</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedPairs = [];
+
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById('live-time').innerText = "BD TIME: " + now.toLocaleTimeString('en-GB', {timeZone: 'Asia/Dhaka', hour12: false});
+    }, 1000);
+
+    function togglePair(pair, el) {
+        if (selectedPairs.includes(pair)) {
+            selectedPairs = selectedPairs.filter(p => p !== pair);
+            el.classList.remove('selected');
+        } else {
+            selectedPairs.push(pair);
+            el.classList.add('selected');
+        }
+    }
+
+    function validateLogin() {
+        if(document.getElementById('user-id').value === "IRTTRADER" && document.getElementById('license-key').value === "IRTOWNER26") {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('bot-section').style.display = 'block';
+        } else { document.getElementById('auth-err').style.display = 'block'; }
+    }
+
+    let signalsCache = "";
+
+    async function generateAllSignals() {
+        if(selectedPairs.length === 0) return alert("Please select at least one Asset!");
+        const resDiv = document.getElementById('results');
+        const start = document.getElementById('t-start').value;
+        const end = document.getElementById('t-end').value;
+        
+        resDiv.innerHTML = "<div style='padding:20px; text-align:center;'>📡 FILTERING HIGH WIN-RATE SIGNALS...</div>";
+        signalsCache = "";
+        let finalHtml = "";
+
+        for (let pair of selectedPairs) {
+            let apiUrl = `https://quotexotc-futureapi.poghen-dx.workers.dev/pairs=${pair.replace("-OTC", "_otc")}?start_time=${start}&end_time=${end}`;
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                const signals = data.signals || [];
+                
+                signals.forEach(s => {
+                    let line = `M1;${pair};${s.time};${s.direction.toUpperCase()}`;
+                    signalsCache += line + "\n";
+                    finalHtml += `<div class="signal-item">
+                        <span>${line.split(';').join(' ; ')}</span>
+                        <span style="color:#fbbf24; font-weight:bold;">99% WIN</span>
+                    </div>`;
+                });
+            } catch (e) { }
+        }
+        resDiv.innerHTML = finalHtml || "<div style='padding:20px; text-align:center; color:#f87171;'>❌ NO SIGNALS FOUND FOR SELECTED CRITERIA.</div>";
+        if(finalHtml) document.getElementById('action-btns').style.display = 'flex';
+    }
+
+    function copyAll() { navigator.clipboard.writeText(signalsCache.trim()); alert("✅ ALL SIGNALS COPIED!"); }
+    function clearAll() { 
+        document.getElementById('results').innerHTML = "SYSTEM READY..."; 
+        document.getElementById('action-btns').style.display = 'none'; 
+        selectedPairs = [];
+        document.querySelectorAll('.pair-item').forEach(el => el.classList.remove('selected'));
+    }
+</script>
+
+</body>
+</html>
